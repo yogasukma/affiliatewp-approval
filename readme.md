@@ -1,6 +1,6 @@
 # AffiliateWP Approval Process
 
-This is AffiliateWP Add On to make affiliate must be request permission to get referring posts/products/urls. After request sent, affiliate need to wait until the request approved by seller/vendor/site owner.
+This is AffiliateWP Add On to make affiliate must send request permission before referring posts/products/urls. After request sent, affiliate need to wait until the request approved by seller/vendor/site owner.
 
 All referral that come to site will checked if it comes from valid and approved request or not. If the refferal not approved then affiliate won't get commissions.
 
