@@ -1,0 +1,16 @@
+{
+    "name": "yogasukmap/affiliatewp-approval",
+    "description": "AffiliateWP add on to create approval process before referring some product",
+    "type": "WordPress Plugin - AffiliateWP Add on",
+    "authors": [
+        {
+            "name": "Yoga Sukma",
+            "email": "hello@yogasukma.web.id"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Yogasukmap\\AffiliateWPApproval\\": "src/"
+        }
+    }
+}
