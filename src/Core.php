@@ -5,6 +5,12 @@ namespace Yogasukmap\AffiliateWPApproval;
 class Core {
 	protected $post_type = "referring-request";
 
+
+	/**
+	 * Registering new post type
+	 *
+	 * @return void
+	 */
 	public function create_post_type() {
 		register_post_type( $this->post_type, [
 			'label'       => "Reffering Request",
@@ -13,6 +19,13 @@ class Core {
 		] );
 	}
 
+	/**
+	 * Create new referral request based on current user login
+	 *
+	 * @param $post_id
+	 *
+	 * @return bool|int|\WP_Error
+	 */
 	public function request( $post_id ) {
 		$user = wp_get_current_user();
 		$post = get_post( $post_id );
@@ -33,6 +46,13 @@ class Core {
 		] );
 	}
 
+	/**
+	 * Get list of users created request
+	 *
+	 * @param int|null $user_id
+	 *
+	 * @return array
+	 */
 	public function get_user_request( $user_id = null ) {
 		if ( is_null( $user_id ) ) {
 			$user_id = get_current_user_id();
@@ -44,6 +64,14 @@ class Core {
 		] );
 	}
 
+	/**
+	 * Update status by site owner / vendor / seller
+	 *
+	 * @param int $post_id
+	 * @param string $status
+	 *
+	 * @return void
+	 */
 	public function update_status( $post_id, $status ) {
 		wp_update_post( [
 			"ID"          => $post_id,
@@ -51,6 +79,14 @@ class Core {
 		] );
 	}
 
+	/**
+	 * Check if there is any request created before for certain user and post
+	 *
+	 * @param $user_id ID of user that will checked
+	 * @param $post_id ID of the post the will checked
+	 *
+	 * @return bool true if it was created before, or false if not found any request created for this user and post
+	 */
 	public function is_requested_before( $user_id, $post_id ) {
 		$request = get_posts( [
 			"author"      => $user_id,
