@@ -30,12 +30,18 @@ class Core {
 			return false;
 		}
 
-		return wp_insert_post( [
+		$request = wp_insert_post( [
 			"post_title"  => $user->display_name . " sent referring request to '" . $post->post_title . "'",
 			"post_type"   => $this->post_type,
-			"post_status" => "waiting",
+			"post_status" => "publish",
 			"post_parent" => $post->ID
 		] );
+
+		if ( $request ) {
+			add_post_meta($request->ID, "_request-status", "waiting");
+		}
+
+		return $request;
 	}
 
 	/**
@@ -52,9 +58,8 @@ class Core {
 		}
 
 		$args = [
-			"author"      => $user_id,
-			"post_type"   => $this->post_type,
-			"post_status" => $this->statuses
+			"author"    => $user_id,
+			"post_type" => $this->post_type,
 		];
 
 		if ( ! is_null( $parent_id ) ) {
@@ -68,6 +73,7 @@ class Core {
 
 	/**
 	 * Update status by site owner / vendor / seller
+	 * status will be saved as post meta as _request-status
 	 *
 	 * @param int $post_id
 	 * @param string $status
@@ -75,10 +81,7 @@ class Core {
 	 * @return void
 	 */
 	public function update_status( $post_id, $status ) {
-		wp_update_post( [
-			"ID"          => $post_id,
-			"post_status" => $status
-		] );
+		update_post_meta( $post_id, "_request-status", $status );
 	}
 
 	/**
@@ -116,7 +119,7 @@ class Core {
 		$user_id = affwp_get_affiliate_user_id( $affiliate_id );
 		$request = $this->get_user_request( $user_id, $post_id );
 
-		if ( empty( $request ) || $request->post_status != "approved" ) {
+		if ( empty( $request ) || get_post_meta( $request->ID, "_request-status", true ) != "approved" ) {
 			return true;
 		}
 

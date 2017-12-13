@@ -12,7 +12,8 @@ include "vendor/autoload.php";
 
 $requestPostType = new Yogasukmap\AffiliateWPApproval\RequestPostType();
 add_action( "init", [ $requestPostType, "create_post_type" ] );
-add_action( "init", [ $requestPostType, "create_custom_status" ] );
+add_action( "add_meta_boxes", [ $requestPostType, "create_metabox" ] );
+add_action( "save_post", [ $requestPostType, "save_metabox_data" ] );
 
 
 $affiliateWPApproval = new Yogasukmap\AffiliateWPApproval\Core();
