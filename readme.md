@@ -11,9 +11,7 @@ All referral that come to site will checked if it comes from valid and approved 
 **@TODO**
 
 * ~~Affiliate can send request to seller/vendor to get referral link for them~~
-
-
-* Make sure only registered referall will be tracked
+* ~Make sure only registered referall will be tracked~
 * Showing in wp-admin so Site Owner can approve the request
 * More Shortcodes
 * Update Documentation
