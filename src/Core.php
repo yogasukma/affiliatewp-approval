@@ -38,7 +38,7 @@ class Core {
 		] );
 
 		if ( $request ) {
-			add_post_meta($request->ID, "_request-status", "waiting");
+			add_post_meta( $request->ID, "_request-status", "waiting" );
 		}
 
 		return $request;
@@ -63,7 +63,7 @@ class Core {
 		];
 
 		if ( ! is_null( $parent_id ) ) {
-			$args["parent"] = $parent_id;
+			$args["post_parent"] = $parent_id;
 		}
 
 		$requests = get_posts( $args );
@@ -111,10 +111,6 @@ class Core {
 	 * @return bool true if current referral should be skipped and not saved, false if it's ok to saved
 	 */
 	public function skipping_referral( $skip, $affiliate_id, $is_valid, $referrer, $tracker ) {
-		if ( ! $is_valid ) {
-			return true;
-		}
-
 		$post_id = url_to_postid( $_SERVER["HTTP_REFERER"] );
 		$user_id = affwp_get_affiliate_user_id( $affiliate_id );
 		$request = $this->get_user_request( $user_id, $post_id );
