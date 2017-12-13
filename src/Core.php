@@ -3,35 +3,12 @@
 namespace Yogasukmap\AffiliateWPApproval;
 
 class Core {
-	protected $post_type = "referring-request";
+	public $post_type;
+	public $statuses;
 
-
-	/**
-	 * Registering new post type
-	 *
-	 * @return void
-	 */
-	public function create_post_type() {
-		register_post_type( $this->post_type, [
-			'label'       => "Reffering Request",
-			'description' => "List of referring request",
-			'public'      => true
-		] );
-	}
-
-	public function create_custom_status() {
-		$statuses = [ "waiting", "approved", "rejected" ];
-
-		foreach ( $statuses as $status ) {
-			register_post_status( $status, [
-				'label'                     => _x( ucfirst( $status ), 'post' ),
-				'public'                    => true,
-				'exclude_from_search'       => false,
-				'show_in_admin_all_list'    => true,
-				'show_in_admin_status_list' => true,
-				'label_count'               => _n_noop( ucfirst( $status ) . ' <span class="count">(%s)</span>', ucfirst( $status ) . ' <span class="count">(%s)</span>' ),
-			] );
-		}
+	public function __construct() {
+		$this->post_type = ( new RequestPostType() )->post_type;
+		$this->statuses  = ( new RequestPostType() )->statuses;
 	}
 
 	/**
@@ -75,9 +52,9 @@ class Core {
 		}
 
 		$args = [
-			"post_type"   => $this->post_type,
 			"author"      => $user_id,
-			"post_status" => [ "waiting", "approved", "rejected" ]
+			"post_type"   => $this->post_type,
+			"post_status" => $this->statuses
 		];
 
 		if ( ! is_null( $parent_id ) ) {
@@ -113,12 +90,7 @@ class Core {
 	 * @return bool true if it was created before, or false if not found any request created for this user and post
 	 */
 	public function is_requested_before( $user_id, $post_id ) {
-		$request = get_posts( [
-			"author"      => $user_id,
-			"post_parent" => $post_id,
-			"post_type"   => $this->post_type,
-			"post_status" => [ "waiting", "approved", "rejected" ]
-		] );
+		$request = $this->get_user_request( $user_id, $post_id );
 
 		return ! empty( $request ) ? true : false;
 	}
