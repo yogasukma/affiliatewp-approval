@@ -19,6 +19,21 @@ class Core {
 		] );
 	}
 
+	public function create_custom_status() {
+		$statuses = [ "waiting", "approved", "rejected" ];
+
+		foreach ( $statuses as $status ) {
+			register_post_status( $status, [
+				'label'                     => _x( ucfirst( $status ), 'post' ),
+				'public'                    => true,
+				'exclude_from_search'       => false,
+				'show_in_admin_all_list'    => true,
+				'show_in_admin_status_list' => true,
+				'label_count'               => _n_noop( ucfirst( $status ) . ' <span class="count">(%s)</span>', ucfirst( $status ) . ' <span class="count">(%s)</span>' ),
+			] );
+		}
+	}
+
 	/**
 	 * Create new referral request based on current user login
 	 *
@@ -60,9 +75,9 @@ class Core {
 		}
 
 		$args = [
-			"post_type" => $this->post_type,
-			"author"    => $user_id,
-			"post_status"    => [ "waiting", "approved", "rejected" ]
+			"post_type"   => $this->post_type,
+			"author"      => $user_id,
+			"post_status" => [ "waiting", "approved", "rejected" ]
 		];
 
 		if ( ! is_null( $parent_id ) ) {

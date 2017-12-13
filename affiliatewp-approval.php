@@ -12,6 +12,7 @@ include "vendor/autoload.php";
 
 $affiliateWPApproval = new Yogasukmap\AffiliateWPApproval\Core();
 add_action( "init", [ $affiliateWPApproval, "create_post_type" ] );
+add_action( "init", [ $affiliateWPApproval, "create_custom_status" ] );
 add_filter( "affwp_tracking_skip_track_visit", [ $affiliateWPApproval, "skipping_referral" ], 10, 5 );
 
 /**
