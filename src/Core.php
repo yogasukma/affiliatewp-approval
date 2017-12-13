@@ -47,21 +47,31 @@ class Core {
 	}
 
 	/**
-	 * Get list of users created request
+	 * Get list of user's request
 	 *
-	 * @param int|null $user_id
+	 * @param int|null $user_id who referring
+	 * @param int|null $parent_id of product/post/urls
 	 *
-	 * @return array
+	 * @return \WP_Post|array
 	 */
-	public function get_user_request( $user_id = null ) {
+	public function get_user_request( $user_id = null, $parent_id = null ) {
 		if ( is_null( $user_id ) ) {
 			$user_id = get_current_user_id();
 		}
 
-		return get_posts( [
-			"post_type"   => $this->post_type,
-			"post_author" => $user_id,
-		] );
+		$args = [
+			"post_type" => $this->post_type,
+			"author"    => $user_id,
+			"post_status"    => [ "waiting", "approved", "rejected" ]
+		];
+
+		if ( ! is_null( $parent_id ) ) {
+			$args["parent"] = $parent_id;
+		}
+
+		$requests = get_posts( $args );
+
+		return count( $requests ) == 1 ? $requests[0] : $requests;
 	}
 
 	/**
@@ -96,5 +106,33 @@ class Core {
 		] );
 
 		return ! empty( $request ) ? true : false;
+	}
+
+	/**
+	 * Check if current referral should saved or not.
+	 * If the post/product/urls has been requested before by the affiliate, but not approved yet, we should skip it.
+	 *
+	 * @param $skip
+	 * @param $affiliate_id
+	 * @param $is_valid
+	 * @param $referrer url, but can't be used since it just showing as admin-ajax.php
+	 * @param $tracker  \Affiliate_WP_Tracking class
+	 *
+	 * @return bool true if current referral should be skipped and not saved, false if it's ok to saved
+	 */
+	public function skipping_referral( $skip, $affiliate_id, $is_valid, $referrer, $tracker ) {
+		if ( ! $is_valid ) {
+			return true;
+		}
+
+		$post_id = url_to_postid( $_SERVER["HTTP_REFERER"] );
+		$user_id = affwp_get_affiliate_user_id( $affiliate_id );
+		$request = $this->get_user_request( $user_id, $post_id );
+
+		if ( empty( $request ) || $request->post_status != "approved" ) {
+			return true;
+		}
+
+		return false;
 	}
 }
