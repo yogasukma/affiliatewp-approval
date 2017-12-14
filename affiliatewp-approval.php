@@ -14,6 +14,3 @@ include "helpers.php";
 $affiliateWPApprovalLogTable = new \Yogasukmap\AffiliateWPApproval\Database\AffiliateWPRequestLogTable();
 $affiliateWPApprovalLogTable->install();
 
-$affiliateWPApproval = new Yogasukmap\AffiliateWPApproval\Core();
-add_filter( "affwp_tracking_skip_track_visit", [ $affiliateWPApproval, "skipping_referral" ], 10, 5 );
-
