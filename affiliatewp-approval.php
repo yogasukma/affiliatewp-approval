@@ -9,37 +9,11 @@
  */
 
 include "vendor/autoload.php";
+include "helpers.php";
 
-$requestPostType = new Yogasukmap\AffiliateWPApproval\RequestPostType();
-add_action( "init", [ $requestPostType, "create_post_type" ] );
-add_action( "add_meta_boxes", [ $requestPostType, "create_metabox" ] );
-add_action( "save_post", [ $requestPostType, "save_metabox_data" ] );
-
+$affiliateWPApprovalLogTable = new \Yogasukmap\AffiliateWPApproval\Database\AffiliateWPRequestLogTable();
+$affiliateWPApprovalLogTable->install();
 
 $affiliateWPApproval = new Yogasukmap\AffiliateWPApproval\Core();
 add_filter( "affwp_tracking_skip_track_visit", [ $affiliateWPApproval, "skipping_referral" ], 10, 5 );
 
-/**
- * Request to be affiliate for post, product or any other post type based on post ID
- *
- * @param int $post_id
- *
- * @return void
- */
-function request_to_be_affiliate_for( $post_id ) {
-	$affiliateWPApproval = new Yogasukmap\AffiliateWPApproval\Core();
-	$affiliateWPApproval->request( $post_id );
-}
-
-/**
- * Check if current user has sent request for this post or not
- *
- * @param int $post_id
- *
- * @return bool
- */
-function is_referring_request_sent_for( $post_id ) {
-	$affiliateWPApproval = new Yogasukmap\AffiliateWPApproval\Core();
-
-	return $affiliateWPApproval->is_requested_before( get_current_user_id(), $post_id );
-}
