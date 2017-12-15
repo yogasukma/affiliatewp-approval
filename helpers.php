@@ -12,6 +12,23 @@ function request_to_be_affiliate_for( $post_id ) {
 	$request->create( $post_id );
 }
 
+
+/**
+ * Invite affiliate to promote the post
+ *
+ * @param int $affiliate_id
+ * @param int $post_id of url/products/posts that want to be affiliated
+ *
+ * @return void
+ */
+function invite_affiliate( $affiliate_id, $post_id ) {
+	$invitation = new Yogasukmap\AffiliateWPApproval\Invitation();
+	$invitation->create( [
+		"affiliate_id" => $affiliate_id,
+		"post_id"      => $post_id
+	] );
+}
+
 /**
  * Update status of request
  * it should called by vendor/owner
@@ -69,6 +86,23 @@ function get_waiting_request( $user_id = null ) {
 }
 
 /**
+ * Getting list of request with status "invited" for affiliate_id
+ *
+ * @param int|null $user_id
+ *
+ * @return null|array
+ */
+function get_invited_request( $user_id = null ) {
+	$invitation = new Yogasukmap\AffiliateWPApproval\Invitation();
+
+	if ( is_null( $user_id ) ) {
+		$user_id = get_current_user_id();
+	}
+
+	return $invitation->invited( $user_id );
+}
+
+/**
  * Getting list of request with status "approved" for product who owned by $user_id
  * if $user_id = null, then $user id is current active login
  *
@@ -85,3 +119,15 @@ function get_approved_request( $user_id = null ) {
 
 	return $request->approved( $user_id );
 }
+
+/**
+ * Get list of all registered and active affiliates
+ *
+ * @return null|array
+ */
+function get_active_affiliates() {
+	$affiliates = new \Yogasukmap\AffiliateWPApproval\Affiliate();
+
+	return $affiliates->withStatus( "active" )->get();
+}
+

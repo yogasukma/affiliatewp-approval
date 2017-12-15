@@ -31,20 +31,6 @@ trait BasicCrud {
 		return $this->wpdb->get_results( "SELECT * FROM " . $this->table_name_with_prefix . $this->get_where_condition() );
 	}
 
-	public function insert( $data ) {
-		$this->wpdb->insert( $this->table_name_with_prefix, $data );
-	}
-
-	public function update( $data, $where ) {
-		$this->wpdb->update( $this->table_name_with_prefix, $data, $where );
-	}
-
-	public function is_exists() {
-		$row = $this->wpdb->get_row( "SELECT * FROM " . $this->table_name_with_prefix . $this->get_where_condition() );
-
-		return is_null( $row ) ? false : true;
-	}
-
 	public function get_where_condition() {
 		$where = "";
 
@@ -69,5 +55,19 @@ trait BasicCrud {
 		}
 
 		return $where;
+	}
+
+	public function insert( $data ) {
+		$this->wpdb->insert( $this->table_name_with_prefix, $data );
+	}
+
+	public function update( $data, $where ) {
+		$this->wpdb->update( $this->table_name_with_prefix, $data, $where );
+	}
+
+	public function is_exists() {
+		$row = $this->wpdb->get_row( "SELECT * FROM " . $this->table_name_with_prefix . $this->get_where_condition() );
+
+		return is_null( $row ) ? false : true;
 	}
 }

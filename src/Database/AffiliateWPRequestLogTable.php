@@ -2,8 +2,8 @@
 
 namespace Yogasukmap\AffiliateWPApproval\Database;
 
-use Yogasukmap\AffiliateWPApproval\Supports\TableCreator;
 use Yogasukmap\AffiliateWPApproval\Supports\BasicCrud;
+use Yogasukmap\AffiliateWPApproval\Supports\TableCreator;
 
 class AffiliateWPRequestLogTable {
 
